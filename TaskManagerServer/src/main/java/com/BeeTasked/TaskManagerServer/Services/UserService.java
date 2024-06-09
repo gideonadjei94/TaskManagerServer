@@ -1,12 +1,11 @@
 package com.BeeTasked.TaskManagerServer.Services;
 
-import com.BeeTasked.TaskManagerServer.NoticeRepositoryImpl;
+import com.BeeTasked.TaskManagerServer.Repository.NoticeRepositoryImpl;
 import com.BeeTasked.TaskManagerServer.Repository.NoticeRepository;
 import com.BeeTasked.TaskManagerServer.Repository.UserRepository;
 import com.BeeTasked.TaskManagerServer.collections.Notification;
 import com.BeeTasked.TaskManagerServer.collections.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
