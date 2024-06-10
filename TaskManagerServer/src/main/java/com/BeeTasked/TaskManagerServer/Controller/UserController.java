@@ -21,31 +21,31 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public boolean loginUser(@RequestParam("teamCode") User user) {
+    public boolean loginUser(@RequestParam User user) {
         return userService.authUser(user).isPresent();
     }
 
     @GetMapping("/members")
-    public List<User> getTeamList(@RequestParam("teamCode") User user){
+    public List<User> getTeamList(@RequestParam User user){
         return userService.getTeamList(user);
     }
 
     @GetMapping
-    public List<Notification> getNotificationsList(@RequestParam("id") User user,Notification notification) {
+    public List<Notification> getNotificationsList(@RequestParam User user,Notification notification) {
         return userService.getNotifications(user, notification);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable String id){
-        userService.delete(id);
+    public void deleteUser(@PathVariable String _id, User user){
+        userService.delete(_id, user);
     }
 
     @PutMapping("/updateProfile")
-    public User updateUserProfile(@RequestBody User user, @RequestParam String userId, @RequestParam boolean isAdmin) {
-        String id = isAdmin ? user.getId() : userId;
+    public User updateUserProfile(@RequestBody User user, @RequestParam String _id, @RequestParam boolean isAdmin) {
+        String id = isAdmin ? user.getId() : _id;
 
         Optional<User> existingUser = userService.getUserById(id);
-        if (existingUser.isPresent()) {
+        if (existingUser.isPresent() && isAdmin) {
             User updateUser = existingUser.get();
             updateUser.setName(user.getName() != null ? user.getName() : updateUser.getName());
             updateUser.setRole(user.getRole() != null ? user.getRole() : updateUser.getRole());
@@ -59,4 +59,10 @@ public class UserController {
     public void markNotificationRead(@RequestParam User user, @RequestParam Notification notification, @RequestParam String isReadType) {
         userService.markNotificationRead(user, notification, isReadType);
     }
+
+    @PutMapping("/activate/{id}")
+    public User activateUser(@PathVariable String _id, @RequestBody User user){
+        return userService.activateUserProfile(_id, user);
+    }
+
 }

@@ -5,6 +5,7 @@ import com.BeeTasked.TaskManagerServer.Repository.NoticeRepository;
 import com.BeeTasked.TaskManagerServer.Repository.UserRepository;
 import com.BeeTasked.TaskManagerServer.collections.Notification;
 import com.BeeTasked.TaskManagerServer.collections.User;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -59,8 +60,17 @@ public class UserService {
         random.nextBytes(bytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
-    public void delete(String id) {
-        userRepository.deleteById(id);
+    public void delete(String id, User user ) {
+        try{
+            if(user.isAdmin()){
+            userRepository.deleteById(id);
+            System.out.println("User deleted successfully");
+            }else{
+                System.out.println("Only admins are allowed to delete a user");
+            }
+        }catch (Exception e){
+            e.getMessage();
+        }
     }
 
     public List<User> getTeamList(User user) {
@@ -90,4 +100,23 @@ public class UserService {
             noticeCustom.updateOne(notification, user);
         }
 }
+
+    public User activateUserProfile(String id, User user) {
+        try{
+            Optional<User> userOptional = userRepository.findById(id);
+            if(userOptional.isPresent()){
+                User user1 = userOptional.get();
+                user1.setActive(user.isActive());
+                userRepository.save(user1);
+                System.out.println("User account has been " + (user.isActive()? "activated ": " Deactivated"));
+                return user;
+            }else{
+                System.out.println("User not found");
+            }
+
+        }catch (Exception e){
+            e.getMessage();
+        }
+      return null;
+    }
 }
