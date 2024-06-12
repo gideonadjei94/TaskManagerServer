@@ -21,7 +21,7 @@ public class Notification {
     private String text;
 
     @DBRef
-    private Task taks;
+    private Task task;
     private String notiType = "alert";
 
     public enum notiType {alert, message}

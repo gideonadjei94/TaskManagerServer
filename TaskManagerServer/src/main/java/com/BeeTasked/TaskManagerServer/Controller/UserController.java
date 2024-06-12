@@ -17,11 +17,14 @@ public class UserController {
 
     @PostMapping("/register")
     public User registerUser(@RequestBody User user) {
-        return userService.save(user);
+        return userService.registerUser(user, user.getName(), user.getEmail());
     }
 
     @PostMapping("/login")
     public boolean loginUser(@RequestParam User user) {
+        if(userService.authUser(user).isPresent()){
+        userService.addUser(user, user.getName(), user.getEmail(), user.getTeamCode());
+        }
         return userService.authUser(user).isPresent();
     }
 
@@ -41,8 +44,8 @@ public class UserController {
     }
 
     @PutMapping("/updateProfile")
-    public User updateUserProfile(@RequestBody User user, @RequestParam String _id, @RequestParam boolean isAdmin) {
-        String id = isAdmin ? user.getId() : _id;
+    public User updateUserProfile(@RequestBody User user, @RequestParam String id, @RequestParam boolean isAdmin) {
+         id = user.getId();
 
         Optional<User> existingUser = userService.getUserById(id);
         if (existingUser.isPresent() && isAdmin) {
@@ -59,7 +62,6 @@ public class UserController {
     public void markNotificationRead(@RequestParam User user, @RequestParam Notification notification, @RequestParam String isReadType) {
         userService.markNotificationRead(user, notification, isReadType);
     }
-
     @PutMapping("/activate/{id}")
     public User activateUser(@PathVariable String _id, @RequestBody User user){
         return userService.activateUserProfile(_id, user);

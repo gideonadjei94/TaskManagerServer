@@ -27,17 +27,37 @@ public class UserService {
     private NoticeRepositoryImpl noticeCustom;
 
     //Admin  registration
-    public User save(User user) {
+    public User registerUser(User user, String name, String email) {
         boolean userExists = userRepository.findByEmail(user.getEmail()).isPresent();
         if(userExists){
             ResponseEntity.status(400);
             System.out.println("User Already exists");
         }else{
+        user.setName(name);
+        user.setEmail(email);
         user.setAdmin(true);
         user.setTeamCode(generateTeamCode());
         userRepository.save(user);
             System.out.println("User Created");
         return user;
+        }
+        return null;
+    }
+
+    public User addUser(User user, String name, String email, String teamcode) {
+        boolean userExists = userRepository.findByEmail(user.getEmail()).isPresent();
+        boolean teamExists = userRepository.findByTeamCode(user.getTeamCode()).isPresent();
+        if(userExists && teamExists){
+            ResponseEntity.status(400);
+            System.out.println("User Already exists");
+        }else if(!userExists && teamExists){
+            user.setName(name);
+            user.setEmail(email);
+            user.setAdmin(false);
+            user.setTeamCode(teamcode);
+            userRepository.save(user);
+            System.out.println("User Created");
+            return user;
         }
         return null;
     }
