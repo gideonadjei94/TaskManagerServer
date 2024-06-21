@@ -80,6 +80,7 @@ public class UserService {
         random.nextBytes(bytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
+
     public void delete(String id, User user ) {
         try{
             if(user.isAdmin()){
@@ -138,5 +139,9 @@ public class UserService {
             e.getMessage();
         }
       return null;
+    }
+
+    public User save(User updateUser) {
+        return userRepository.save(updateUser);
     }
 }
